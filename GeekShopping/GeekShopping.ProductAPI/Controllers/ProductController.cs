@@ -38,7 +38,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductVO>> Create(ProductVO productVO)
+    public async Task<ActionResult<ProductVO>> Create([FromBody] ProductVO productVO)
     {
         if (productVO is null)
             return BadRequest();
@@ -49,7 +49,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<ProductVO>> Update(ProductVO productVO)
+    public async Task<ActionResult<ProductVO>> Update([FromBody] ProductVO productVO)
     {
         if (productVO is null)
             return BadRequest();
