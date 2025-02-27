@@ -1,18 +1,18 @@
-using AutoMapper;
+﻿using AutoMapper;
 using GeekShopping.ProductAPI.Data.ValueObjects;
 using GeekShopping.ProductAPI.Model;
 
-namespace GeekShopping.ProductAPI.Config;
-
-public class MappingConfig
+namespace GeekShopping.ProductAPI.Config
 {
-    public static MapperConfiguration RegisterMaps()
+    public class MappingConfig
     {
-        var mappingConfig = new MapperConfiguration(config =>
+        public static MapperConfiguration RegisterMaps()
         {
-            config.CreateMap<ProductVO, Product>();
-            config.CreateMap<Product, ProductVO>();
-        });
-        return mappingConfig;
+            var mappingConfig = new MapperConfiguration(config => {
+                config.CreateMap<ProductVO, Product>();
+                config.CreateMap<Product, ProductVO>();
+            });
+            return mappingConfig;
+        }
     }
 }
