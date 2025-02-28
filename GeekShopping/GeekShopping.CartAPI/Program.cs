@@ -1,13 +1,7 @@
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
 using AutoMapper;
+using GeekShopping.CartAPI.Model.Context;
 using GeekShopping.ProductAPI.Config;
-using GeekShopping.ProductAPI.Model.Context;
-using GeekShopping.ProductAPI.Repository;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -16,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configuração do banco de dados
 var connection = builder.Configuration["MySQlConnection:MySQlConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(options => options.
-    UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 5))));
+    UseMySql(connection, ServerVersion.AutoDetect(connection)));
 
 // Configuração do AutoMapper
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
@@ -24,7 +18,7 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Configuração do repositório
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+// builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // Adicionando serviços ao contêiner
 builder.Services.AddControllers();
@@ -49,7 +43,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.ProductAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.CartAPI", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -85,7 +79,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.ProductAPI v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.CartAPI v1"));
 }
 
 app.UseHttpsRedirection();
@@ -94,5 +88,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.Run();
 
 app.Run();
