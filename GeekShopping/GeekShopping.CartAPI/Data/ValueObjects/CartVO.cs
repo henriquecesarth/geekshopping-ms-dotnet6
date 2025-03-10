@@ -1,8 +1,10 @@
-namespace GeekShopping.CartAPI.Data.ValueObjects;
+﻿using System.Collections.Generic;
 
-public class CartVO
+namespace GeekShopping.CartAPI.Data.ValueObjects
 {
-    public CartHeaderVO CartHeader { get; set; }
-
-    public IEnumerable<CartDetailVO> CartDetails { get; set; }
+    public class CartVO
+    {
+        public CartHeaderVO CartHeader { get; set; }
+        public IEnumerable<CartDetailVO> CartDetails { get; set; }
+    }
 }

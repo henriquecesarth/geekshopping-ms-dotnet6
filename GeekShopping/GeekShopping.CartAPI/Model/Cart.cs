@@ -1,8 +1,10 @@
-namespace GeekShopping.CartAPI.Model;
+﻿using System.Collections.Generic;
 
-public class Cart
+namespace GeekShopping.CartAPI.Model
 {
-    public CartHeader CartHeader { get; set; }
-
-    public IEnumerable<CartDetail> CartDetails { get; set; }
+    public class Cart
+    {
+        public CartHeader CartHeader { get; set; }
+        public IEnumerable<CartDetail> CartDetails { get; set; }
+    }
 }

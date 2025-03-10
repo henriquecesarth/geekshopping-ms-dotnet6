@@ -1,7 +1,13 @@
+using System;
+using System.Collections.Generic;
 using AutoMapper;
+using GeekShopping.CartAPI.Config;
 using GeekShopping.CartAPI.Model.Context;
-using GeekShopping.ProductAPI.Config;
+using GeekShopping.CartAPI.Repository;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -18,7 +24,7 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Configuração do repositório
-// builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 // Adicionando serviços ao contêiner
 builder.Services.AddControllers();
@@ -88,7 +94,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.Run();
 
 app.Run();

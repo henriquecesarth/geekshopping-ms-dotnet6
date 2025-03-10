@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using GeekShopping.CartAPI.Model.Base;
 
 namespace GeekShopping.CartAPI.Model
 {
@@ -10,7 +9,7 @@ namespace GeekShopping.CartAPI.Model
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("id")]
         public long Id { get; set; }
-        
+
         [Column("name")]
         [Required]
         [StringLength(150)]
