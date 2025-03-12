@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.IServices;
@@ -89,24 +90,33 @@ public class CartController : Controller
     
     private async Task<CartViewModel> FindUserCart()
     {
-        var token = await HttpContext.GetTokenAsync("access_token");
-        var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
-    
-        var response = await _cartService.FindCartByUserId(userId, token);
-    
-        if (response?.CartHeader != null)
+        try
         {
-            if (!string.IsNullOrEmpty(response.CartHeader.CouponCode))
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+    
+            var response = await _cartService.FindCartByUserId(userId, token);
+    
+            if (response?.CartHeader != null)
             {
-                var coupon = await _couponService.GetCoupon(response.CartHeader.CouponCode, token);
-                if (coupon?.CouponCode != null) response.CartHeader.DiscountAmount = coupon.DiscountAmount;
+                if (!string.IsNullOrEmpty(response.CartHeader.CouponCode))
+                {
+                    var coupon = await _couponService.GetCoupon(response.CartHeader.CouponCode, token);
+                    if (coupon?.CouponCode != null) response.CartHeader.DiscountAmount = coupon.DiscountAmount;
+                }
+    
+                foreach (var detail in response.CartDetails)
+                    response.CartHeader.PurchaseAmount += detail.Product.Price * detail.Count;
+                response.CartHeader.PurchaseAmount -= response.CartHeader.DiscountAmount;
             }
     
-            foreach (var detail in response.CartDetails)
-                response.CartHeader.PurchaseAmount += detail.Product.Price * detail.Count;
-            response.CartHeader.PurchaseAmount -= response.CartHeader.DiscountAmount;
+            return response;
         }
-    
-        return response;
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
     }
 }

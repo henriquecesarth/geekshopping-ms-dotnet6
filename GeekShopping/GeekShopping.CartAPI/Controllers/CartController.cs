@@ -1,13 +1,10 @@
 ﻿using GeekShopping.CartAPI.Data.ValueObjects;
 using GeekShopping.CartAPI.Repository;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GeekShopping.CartAPI.Messages;
+using GeekShopping.CartAPI.RabbitMQSender;
 
 namespace GeekShopping.CartAPI.Controllers
 {
@@ -16,11 +13,12 @@ namespace GeekShopping.CartAPI.Controllers
     public class CartController : ControllerBase
     {
         private ICartRepository _repository;
-
-        public CartController(ICartRepository repository)
+        private IRabbitMQMessageSender _rabbitMqMessageSender;
+        public CartController(ICartRepository repository, IRabbitMQMessageSender rabbitMqMessageSender)
         {
-            _repository = repository ?? throw new
-                ArgumentNullException(nameof(repository));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _rabbitMqMessageSender =
+                rabbitMqMessageSender ?? throw new ArgumentNullException(nameof(rabbitMqMessageSender));
         }
 
         [HttpGet("find-cart/{id}")]
@@ -91,6 +89,7 @@ namespace GeekShopping.CartAPI.Controllers
             vo.CartDetails = cart.CartDetails;
             vo.DateTime = DateTime.Now;
             //TASK RabbitMQ logic comes here
+            _rabbitMqMessageSender.SendMessage(vo, "checkoutqueue");
             
             return Ok(vo);
         }
