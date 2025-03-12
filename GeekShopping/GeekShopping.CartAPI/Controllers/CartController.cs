@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GeekShopping.CartAPI.Messages;
 
 namespace GeekShopping.CartAPI.Controllers
 {
@@ -77,6 +78,21 @@ namespace GeekShopping.CartAPI.Controllers
             var status = await _repository.RemoveCoupon(userId);
             if (!status) return NotFound();
             return Ok(status);
+        }
+
+        [HttpPost("checkout")]
+        public async Task<ActionResult<CheckoutHeaderVO>> Checkout(CheckoutHeaderVO vo)
+        {
+            if (vo?.UserId == null) return BadRequest();
+            
+            var cart = await _repository.FindCartByUserId(vo.UserId);
+            if (cart == null) return NotFound();
+
+            vo.CartDetails = cart.CartDetails;
+            vo.DateTime = DateTime.Now;
+            //TASK RabbitMQ logic comes here
+            
+            return Ok(vo);
         }
     }
 }
