@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GeekShopping.Web.Models.ProductViewModel>
+﻿@model IEnumerable<ProductViewModel>
 <form>
     <div class="container row">
         @foreach (var product in Model)
@@ -18,7 +18,9 @@
                                 </div>
                                 <div class="col">
                                     <a asp-action="Details" asp-route-id="@product.Id"
-                                        class="btn btn-success form-control">Details</a>
+                                       class="btn btn-success form-control">
+                                        Details
+                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GeekShopping.Web.Models.ProductViewModel>
+﻿@model IEnumerable<ProductViewModel>
 
 <br/>
 <br/>
@@ -15,43 +15,44 @@
     </div>
     <table class="table">
         <thead>
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Category
-                </th>
-                <th>
-                    Price
-                </th>
-            </tr>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Price
+            </th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @item.Name
-                    </td>
-                    <td>
-                        @item.CategoryName
-                    </td>
-                    <td>
-                        @((item.Price).ToString("c"))
-                    </td>
-                    <td>
-                       <a asp-action="ProductUpdate" class="btn btn-success" asp-route-id="@item.Id">
-                           <i class="fas fa-edit"></i>
-                       </a>
-                       @if(User.IsInRole("Admin")){
-                           <a asp-action="ProductDelete" class="btn btn-danger" asp-route-id="@item.Id">
-                               <i class="fas fa-trash"></i>
-                           </a>
-                       }
-                    </td>
-                </tr>
-            }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.CategoryName
+                </td>
+                <td>
+                    @item.Price.ToString("c")
+                </td>
+                <td>
+                    <a asp-action="ProductUpdate" class="btn btn-success" asp-route-id="@item.Id">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="ProductDelete" class="btn btn-danger" asp-route-id="@item.Id">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

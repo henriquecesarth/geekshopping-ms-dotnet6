@@ -1,4 +1,4 @@
-﻿@model GeekShopping.Web.Models.ProductViewModel
+﻿@model ProductViewModel
 
 <form method="post">
     <input asp-for="Id" hidden/>
@@ -9,7 +9,7 @@
                     <h1 class="text-dark">@Model.Name</h1>
                 </div>
                 <div class="col-12 col-md-3 text-end">
-                    <h1 class="text-warning">@((Model.Price).ToString("c"))</h1>
+                    <h1 class="text-warning">@Model.Price.ToString("c")</h1>
                 </div>
             </div>
             <div class="card-body">
@@ -38,13 +38,15 @@
             </div>
             <div class="card-footer row">
                 <div class="col-12 col-md-6 pb-1">
-                    <a asp-action="Index" asp-controller="Home"  class="btn btn-success btn-square form-control btn-lg" style="height:50px;">
-                        Back to List</a>
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-success btn-square form-control btn-lg" style="height:50px;">
+                        Back to List
+                    </a>
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <button type="submit" class="btn-primary form-control btn-lg"  style="height:50px;">
-                        Add to Cart</button>
+                    <button type="submit" class="btn-primary form-control btn-lg" style="height:50px;">
+                        Add to Cart
+                    </button>
                 </div>
             </div>
         </div>

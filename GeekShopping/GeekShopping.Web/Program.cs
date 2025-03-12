@@ -14,7 +14,11 @@ builder.Services.AddHttpClient<IProductService, ProductService>(c =>
 );
 
 builder.Services.AddHttpClient<ICartService, CartService>(c =>
-    c.BaseAddress = new Uri("https://localhost:4445/")
+    c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CartAPI"])
+);
+
+builder.Services.AddHttpClient<ICouponService, CouponService>(c =>
+    c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"])
 );
 
 builder.Services.AddControllersWithViews();
