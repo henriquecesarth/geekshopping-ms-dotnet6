@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using AutoMapper;
-using GeekShopping.CartAPI.Config;
-using GeekShopping.CartAPI.Model.Context;
-using GeekShopping.CartAPI.RabbitMQSender;
-using GeekShopping.CartAPI.Repository;
-using Microsoft.AspNetCore.Builder;
+using GeekShopping.OrderAPI.MessageConsumer;
+using GeekShopping.OrderAPI.Model.Context;
+using GeekShopping.OrderAPI.Repository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -19,23 +12,15 @@ var connection = builder.Configuration["MySQlConnection:MySQlConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(options => options.
     UseMySql(connection, ServerVersion.AutoDetect(connection)));
 
-// Configuração do AutoMapper
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+var mySqlBuilder = new DbContextOptionsBuilder<MySQLContext>();
+mySqlBuilder.UseMySql(connection, ServerVersion.AutoDetect(connection));
 
 // Configuração do repositório
-builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddScoped<ICouponRepository, CouponRepository>();
-
-builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
+builder.Services.AddSingleton(new OrderRepository(mySqlBuilder.Options));
+builder.Services.AddHostedService<RabbitMQCheckoutConsumer>();
 
 // Adicionando serviços ao contêiner
 builder.Services.AddControllers();
-
-builder.Services.AddHttpClient<ICouponRepository, CouponRepository>(s => s.BaseAddress =
-    new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
-
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -57,7 +42,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.CartAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.OrderAPI", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -93,7 +78,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.CartAPI v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.OrderAPI v1"));
 }
 
 app.UseHttpsRedirection();

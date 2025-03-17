@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -70,12 +71,17 @@ public class CartService : ICartService
         throw new Exception("Something went wrong when calling API");
     }
 
-    public async Task<CartHeaderViewModel> Checkout(CartHeaderViewModel model, string token)
+    public async Task<object> Checkout(CartHeaderViewModel model, string token)
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await _client.PostAsJson($"{BasePath}/checkout", model);
+        
         if (response.IsSuccessStatusCode)
             return await response.ReadContentAs<CartHeaderViewModel>();
+        else if (response.StatusCode == HttpStatusCode.PreconditionFailed)
+            return "Coupon price has changed, please confirm!";
+        
+        
         throw new Exception("Something went wrong when calling API");
     }
 
