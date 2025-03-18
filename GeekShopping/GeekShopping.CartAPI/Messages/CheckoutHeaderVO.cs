@@ -18,7 +18,7 @@ public class CheckoutHeaderVO : BaseMessage
     public string Email { get; set; }
     public string CardNumber { get; set; }
     public string CVV { get; set; }
-    public string ExpireMonthYear { get; set; }
+    public string ExpiryMonthYear { get; set; }
     public int CartTotalItens { get; set; }
     public IEnumerable<CartDetailVO> CartDetails { get; set; }
 }

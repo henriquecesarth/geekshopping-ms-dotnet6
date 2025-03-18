@@ -42,8 +42,8 @@ namespace GeekShopping.OrderAPI.Model
         [Column("cvv")]
         public string CVV { get; set; }
         
-        [Column("expire_month_year")]
-        public string ExpireMonthYear { get; set; }
+        [Column("expiry_month_year")]
+        public string ExpiryMonthYear { get; set; }
         
         [Column("total_itens")]
         public int OrderTotalItens { get; set; }
